@@ -26,6 +26,9 @@ namespace QScraper
                 Logger.Error("Unhandled Exception: {0}", arg.ExceptionObject);
             };
 
+            // Verify and create image folders
+            if(!Directory.Exists("images")) Directory.CreateDirectory("images");
+
             var sw = Stopwatch.StartNew();
 
             Logger.Info("Started generating json file");
@@ -414,25 +417,25 @@ namespace QScraper
         //Daily Steals
         private static List<Dictionary<string, object>> ParseDailyStealsDeals()
         {
-            var urls = new string[] {
-                "http://www.dailysteals.com/rss",
-                "http://mobile.dailysteals.com/rss",
-                "http://home.dailysteals.com/rss",
-                "http://toys.dailysteals.com/rss",
-                "http://lastcall.dailysteals.com/rss",
+            var urls = new string[][] {
+                new string[] { "http://www.dailysteals.com/rss", "dailysteals.main" },
+                new string[] { "http://mobile.dailysteals.com/rss", "dailysteals.mobile" },
+                new string[] { "http://home.dailysteals.com/rss", "dailysteals.home" },
+                new string[] { "http://toys.dailysteals.com/rss", "dailysteals.toys" },
+                new string[] { "http://lastcall.dailysteals.com/rss", "dailysteals.lastcall" }
             };
 
             var items = new List<Dictionary<string, object>>();
             foreach (var url in urls)
             {
-                var currRet = ParseOneDailyStealsDeal(url);
+                var currRet = ParseOneDailyStealsDeal(url[0], url[1]);
                 items.Add(currRet);
             }
 
             return items;
         }
 
-        private static Dictionary<string, object> ParseOneDailyStealsDeal(string url)
+        private static Dictionary<string, object> ParseOneDailyStealsDeal(string url, string name)
         {
             var item = new Dictionary<string, object>() {
                 {"name", ""},
@@ -446,7 +449,7 @@ namespace QScraper
             /*var hDoc = new HtmlDocument();
             hDoc.OptionAutoCloseOnEnd = true;
             hDoc.LoadHtml(body);*/
-            
+
             XDocument xdoc = null;
             try { xdoc = XDocument.Parse(body); }
             catch { return item; }
@@ -475,8 +478,8 @@ namespace QScraper
                 var nameEle = el.Element("title");
                 var urlEle = el.Element("link");
                 var desEle = el.Element("description");
-                var tempRet = ParseOneDailyStealsHtmlDeal(urlEle.Value);
-                
+                var tempRet = ParseOneDailyStealsHtmlDeal(urlEle.Value, name);
+
                 if (nameEle != null) item["name"] = nameEle.Value;
                 if (urlEle != null) item["URL"] = urlEle.Value;
                 if (desEle != null) item["description"] = ParseWootDescription(desEle);
@@ -490,7 +493,7 @@ namespace QScraper
             return item;
         }
 
-        private static Dictionary<string, object> ParseOneDailyStealsHtmlDeal(string url)
+        private static Dictionary<string, object> ParseOneDailyStealsHtmlDeal(string url, string name)
         {
             var item = new Dictionary<string, object>() {
                 {"price", ""},
@@ -511,7 +514,17 @@ namespace QScraper
                 var finalPrice = mainProd.SelectSingleNode(".//div[@class='details']/div[@class='yourprice']/strong");
 
                 if (finalPrice != null) item["price"] = WebUtility.HtmlDecode(finalPrice.FirstChild.InnerText.Trim());
-                if (img != null) item["photo"] = img.GetAttributeValue("src", "");
+                if (img != null)
+                {
+                    item["photo"] = img.GetAttributeValue("src", "");
+
+                    // Save image to file
+                    using (WebClient client = new WebClient())
+                    {
+                        client.DownloadFile(item["photo"].ToString(), "images/" + name + ".jpg");
+                    }
+
+                }
             }
             catch (Exception ex)
             {
