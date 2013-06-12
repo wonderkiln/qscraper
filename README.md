@@ -7,7 +7,7 @@ Support for the following deal sources...
 
 1. Newegg Shellshocker
 2. NeweggFlash (http://www.neweggflash.com/)
-3. Woot!
+3. Woot! (Inluding Moofi and possibly Woot Plus items)
 4. 1SaleADay
 5. DailySteals
 6. Yugster
