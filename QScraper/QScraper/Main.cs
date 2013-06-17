@@ -42,6 +42,7 @@ namespace QScraper
             var steepandCheapTask = Task.Factory.StartNew<Dictionary<string, object>>(ParseSteepandCheap);
             var geeksTask = Task.Factory.StartNew<Dictionary<string, object>>(ParseGeeks);
             var yugsterTask = Task.Factory.StartNew<List<Dictionary<string, object>>>(ParseYugster);
+            var yugsterDealsTask = Task.Factory.StartNew<List<object>>(ParseYugsterDeals);
 
             Task.WaitAll(wootMainTask, dealListTask, dailyStealsTask, onesaleadayTask, amazonGoldBoxTask, newEggShellShockersTask, steepandCheapTask, geeksTask, yugsterTask);
 
@@ -85,9 +86,7 @@ namespace QScraper
             allDeals.Add("shellshocker.list", newEggShellShockersTask.Result);
             allDeals.Add("geeks", geeksTask.Result);
 
-            // Others
-            allDeals.Add("amazongoldbox", amazonGoldBoxTask.Result);
-            allDeals.Add("steepandcheap", steepandCheapTask.Result);
+            // Yugster
             if (yugsterTask.Result.Count == 8)
             {
                 allDeals.Add("yugster.tdeal", yugsterTask.Result[0]);
@@ -99,6 +98,11 @@ namespace QScraper
                 allDeals.Add("yugster.twatch", yugsterTask.Result[6]);
                 allDeals.Add("yugster.chance", yugsterTask.Result[7]);
             }
+            allDeals.Add("yugster.picks", yugsterDealsTask.Result);
+
+            // Others
+            allDeals.Add("amazongoldbox", amazonGoldBoxTask.Result);
+            allDeals.Add("steepandcheap", steepandCheapTask.Result);
 
             ReplaceLinks(allDeals);
 
@@ -158,6 +162,15 @@ namespace QScraper
             allDeals["dailysteals.home"]["URL"] = "http://www.tkqlhce.com/od98r09608OVQRQPPUOQQQXWQTY";
             allDeals["dailysteals.toys"]["URL"] = "http://www.jdoqocy.com/ih117xdmjdl07232116022298318";
             allDeals["dailysteals.lastcall"]["URL"] = "http://www.tkqlhce.com/gg77mu2-u1HOJKJIINHJJJQPKIQ";
+
+            allDeals["yugster.tdeal"]["URL"] = "http://www.shareasale.com/r.cfm?B=363129&U=659402&M=37990&urllink=";
+            allDeals["yugster.tech"]["URL"] = "http://www.shareasale.com/r.cfm?B=398168&U=659402&M=37990&urllink=";
+            allDeals["yugster.yug"]["URL"] = "http://www.shareasale.com/r.cfm?B=391034&U=659402&M=37990&urllink=";
+            allDeals["yugster.offer"]["URL"] = "http://www.shareasale.com/r.cfm?B=398113&U=659402&M=37990&urllink=";
+            allDeals["yugster.home"]["URL"] = "http://shrsl.com/?~3rgt";
+            allDeals["yugster.free"]["URL"] = "http://www.shareasale.com/r.cfm?B=480297&U=659402&M=37990&urllink=";
+            allDeals["yugster.twatch"]["URL"] = "http://www.shareasale.com/r.cfm?B=391035&U=659402&M=37990&urllink=";
+            allDeals["yugster.chance"]["URL"] = "http://www.shareasale.com/r.cfm?B=398115&U=659402&M=37990&urllink=";
 
             allDeals["amazongoldbox"]["URL"] = "http://www.amazon.com/gp/goldbox/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=dealflux-20";
             allDeals["geeks"]["URL"] = "http://www.dpbolvw.net/q997ar-xrzELGHGFFKEGFKINMHL";
@@ -934,7 +947,7 @@ namespace QScraper
             var body = DownloadString(url);
             if (body == null)
             {
-                Logger.Error("Error while downloading one Tugster deal");
+                Logger.Error("Error while downloading one Yugster deal");
                 return item;
             }
 
@@ -1015,6 +1028,62 @@ namespace QScraper
             }
 
             return item;
+        }
+
+        private static List<object> ParseYugsterDeals()
+        {
+            string url = "http://www.yugster.com/todays-deals/plugster-s-picks";
+
+            List<object> items = new List<object>();
+
+            var body = DownloadString(url);
+            if (body == null)
+            {
+                Logger.Error("Error while downloading Yugster deals");
+                return items;
+            }
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(body);
+
+            try
+            {
+                var divDeals = doc.DocumentNode.SelectNodes("//div[@class='yo_product']");
+
+                foreach (var divDeal in divDeals)
+                {
+                    var nameEle = divDeal.SelectSingleNode("h2");
+                    var photoEle = divDeal.SelectSingleNode("div[@class='product_thumb grid']/a/img");
+                    var urlEle = divDeal.SelectSingleNode("div[@class='product_thumb grid']/a");
+                    var priceEle = divDeal.SelectSingleNode("div[@class='product_description grid']/p[@class='yugster_price']/span");
+
+                    string name = "";
+                    if (nameEle != null) name = HtmlEntity.DeEntitize(nameEle.InnerText).Trim();
+
+                    string link = "";
+                    if (urlEle != null) link = "http://www.yugster.com" + urlEle.GetAttributeValue("href", "");
+
+                    string photo = "";
+                    if (photoEle != null) photo = "http://www.yugster.com" + photoEle.GetAttributeValue("src", "");
+
+                    string price = "";
+                    if (priceEle != null) price = HtmlEntity.DeEntitize(priceEle.InnerText).Trim();
+
+                    items.Add(new Dictionary<string, object>()
+                    {
+                        {"name", name},
+                        {"URL", link},
+                        {"photo", photo},
+                        {"price", price}
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Exception when parsing Yugster deals: {0}", ex.Message);
+            }
+
+            return items;
         }
 
         // Download method
