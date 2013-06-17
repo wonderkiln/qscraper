@@ -167,10 +167,15 @@ namespace QScraper
             allDeals["yugster.tech"]["URL"] = "http://www.shareasale.com/r.cfm?B=398168&U=659402&M=37990&urllink=";
             allDeals["yugster.yug"]["URL"] = "http://www.shareasale.com/r.cfm?B=391034&U=659402&M=37990&urllink=";
             allDeals["yugster.offer"]["URL"] = "http://www.shareasale.com/r.cfm?B=398113&U=659402&M=37990&urllink=";
-            allDeals["yugster.home"]["URL"] = "http://shrsl.com/?~3rgt";
+            allDeals["yugster.home"]["URL"] = "http://www.shareasale.com/r.cfm?u=659402&b=400523&m=37990&afftrack=&urllink=www%2Eyugster%2Ecom%2Ftodays%2Ddeals%2Fhome%2Dliving";
             allDeals["yugster.free"]["URL"] = "http://www.shareasale.com/r.cfm?B=480297&U=659402&M=37990&urllink=";
-            allDeals["yugster.twatch"]["URL"] = "http://www.shareasale.com/r.cfm?B=391035&U=659402&M=37990&urllink=";
+            allDeals["yugster.twatch"]["URL"] = "http://www.shareasale.com/r.cfm?u=659402&b=400523&m=37990&afftrack=&urllink=www%2Eyugster%2Ecom%2Ftodays%2Ddeals%2Fdaily%2Dwatch%2Ddeal";
             allDeals["yugster.chance"]["URL"] = "http://www.shareasale.com/r.cfm?B=398115&U=659402&M=37990&urllink=";
+
+            foreach (var deal in allDeals["yugster.picks"])
+            {
+                deal["URL"] = "http://www.shareasale.com/r.cfm?u=659402&b=400523&m=37990&afftrack=&urllink=" + deal["URL"];
+            }
 
             allDeals["amazongoldbox"]["URL"] = "http://www.amazon.com/gp/goldbox/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=dealflux-20";
             allDeals["geeks"]["URL"] = "http://www.dpbolvw.net/q997ar-xrzELGHGFFKEGFKINMHL";
