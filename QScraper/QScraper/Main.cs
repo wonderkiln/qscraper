@@ -27,7 +27,7 @@ namespace QScraper
             };
 
             // Verify and create image folders
-            if(!Directory.Exists("images")) Directory.CreateDirectory("images");
+            if (!Directory.Exists("images")) Directory.CreateDirectory("images");
 
             var sw = Stopwatch.StartNew();
 
@@ -88,11 +88,16 @@ namespace QScraper
             // Others
             allDeals.Add("amazongoldbox", amazonGoldBoxTask.Result);
             allDeals.Add("steepandcheap", steepandCheapTask.Result);
-            if (yugsterTask.Result.Count == 3)
+            if (yugsterTask.Result.Count == 8)
             {
                 allDeals.Add("yugster.tdeal", yugsterTask.Result[0]);
-                allDeals.Add("yugster.yug", yugsterTask.Result[1]);
-                allDeals.Add("yugster.twatch", yugsterTask.Result[2]);
+                allDeals.Add("yugster.tech", yugsterTask.Result[1]);
+                allDeals.Add("yugster.yug", yugsterTask.Result[2]);
+                allDeals.Add("yugster.offer", yugsterTask.Result[3]);
+                allDeals.Add("yugster.home", yugsterTask.Result[4]);
+                allDeals.Add("yugster.free", yugsterTask.Result[5]);
+                allDeals.Add("yugster.twatch", yugsterTask.Result[6]);
+                allDeals.Add("yugster.chance", yugsterTask.Result[7]);
             }
 
             ReplaceLinks(allDeals);
@@ -895,8 +900,13 @@ namespace QScraper
             string[] urls = new string[]
             {
                 "http://www.yugster.com/todays-deals/daily-offer",
+                "http://www.yugster.com/todays-deals/sneak-preview-offer",
                 "http://www.yugster.com/todays-deals/yours-until-gone",
-                "http://www.yugster.com/todays-deals/daily-watch-deal"
+                "http://www.yugster.com/todays-deals/special-offer",
+                "http://www.yugster.com/todays-deals/home-living",
+                "http://www.yugster.com/todays-deals/free-today",
+                "http://www.yugster.com/todays-deals/daily-watch-deal",
+                "http://www.yugster.com/todays-deals/last-chance"
             };
 
             var items = new List<Dictionary<string, object>>();
