@@ -51,15 +51,14 @@ These would be different per each deal source as no two deal sources have the sa
 ## Deal Sources Supported
 ##### Woot!
 http://api.woot.com/2
-
 ##### 1SaleADay
-No API available, an RSS feed is available however. http://feeds.feedburner.com/1saleaday?format=xml
-
+http://feeds.feedburner.com/1saleaday?format=xml
 ##### Yugster
-Another RSS driven site. http://www.yugster.com/rss.xml
-
+http://www.yugster.com/rss.xml
 ##### DailySteals
-RSS Feed - http://www.dailysteals.com/rss
+http://www.dailysteals.com/rss
+##### Dell Daily Deals
+http://accessories.dell.com/sna/sna.aspx?c=ca&cs=cadhs1&l=en&s=dhs&~topic=hotdeals_redhot
 
 - TeeFury
 - NeweggFlash
