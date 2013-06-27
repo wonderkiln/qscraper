@@ -62,7 +62,7 @@ http://accessories.dell.com/sna/sna.aspx?c=ca&cs=cadhs1&l=en&s=dhs&~topic=hotdea
 
 - TeeFury
 - NeweggFlash
-- Amazon 
+- Amazon
 - - Gold Box Deals (include upcoming deals http://www.amazon.com/gp/goldbox/all-deals?ie=UTF8&gbNodeId=468642)
 - - Amazon Featured Deals (Video Games)
 
